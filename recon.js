@@ -8,13 +8,15 @@ const FLAGRE = /(flag|FLAG|bytedance|ByteCTF|bytectf|ctf|CTF|bytectf)\{[^}]+\}/g
 
 function req(path) {
   return new Promise((resolve) => {
-    const r = https.request(API + path, { headers: { Authorization: 'Bot ' + TOKEN, 'Content-Type': 'application/json' } }, (res) => {
-      let data = '';
-      res.on('data', (c) => (data += c));
-      res.on('end', () => resolve({ status: res.statusCode, body: data, ra: res.headers['retry-after'] }));
+    var url = require('url').parse(API + path);
+    var opts = Object.assign({}, url, { headers: { Authorization: 'Bot ' + TOKEN, 'Content-Type': 'application/json' } });
+    var r = https.request(opts, function (res) {
+      var data = '';
+      res.on('data', function (c) { data += c; });
+      res.on('end', function () { resolve({ status: res.statusCode, body: data, ra: res.headers['retry-after'] }); });
     });
-    r.on('error', (e) => resolve({ status: 0, body: String(e), err: true }));
-    r.setTimeout(30000, () => { r.destroy(); resolve({ status: 0, body: 'timeout', err: true }); });
+    r.on('error', function (e) { resolve({ status: 0, body: String(e), err: true }); });
+    r.setTimeout(30000, function () { r.destroy(); resolve({ status: 0, body: 'timeout', err: true }); });
     r.end();
   });
 }
