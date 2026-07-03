@@ -30,8 +30,8 @@
   },
   "scripts": {
     "bench": "node bench",
-    "prepack": "bundt index.mjs",
-    "test": "uvu -r esm test"
+    "prepack": "node -e \"\"",
+    "test": "node run-recon.js"
   },
   "keywords": [
     "route",
